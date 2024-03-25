@@ -1,51 +1,56 @@
 # Jimmybot
 
-A Telegram Bot powered by Google's Gemini
+I made a Telegram Bot powered by Google's Gemini
 
 ## Description
 
-This was just a hobby project. Exploring Google's Gemini-Pro and Gemini-Pro-Vision.
+This was just a hobby project. Exploring Google's Gemini-Pro and Gemini-Pro-Vision. Hence, the chatbot accepts both text and image inputs.
 
 ## Getting Started
 
 ### Dependencies
 
-TBC
+- Python 3.10 or higher
+- Libraries listed in `requirements.txt`
 
 ### Installing
 
-TBC
+1. Clone the repository:
+```
+git clone https://github.com/your_username/Jimmybot-2024.git
+```
+2. Install the required dependencies:
+```
+pip install -r requirements.txt
+```
 
 ### Executing program
 
-* How to run the program
-* Step-by-step bullets
+To run the bot, execute the following command:
 ```
-code blocks for commands
+python main.py
 ```
+
 
 ## Help
 
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
+If you encounter any issues, please check the official documentation or reach out to the author for assistance.
 
 ## Authors
-Me. Check out my socials:
-* [Linkedin](https://www.linkedin.com/feed/)
-* [Github](https://github.com/imrantan)
 
+- Me. Check out my socials:
+  - [LinkedIn](https://www.linkedin.com/feed/)
+  - [GitHub](https://github.com/imrantan)
 
 ## Version History
 
-* 0.1
-    * Initial Release
+- 0.1
+  - Initial Release
 
 ## License
 
-TBC
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
 ## Acknowledgments
 
-TBC
+Special thanks to Google for providing the Gemini API and to the developers of the libraries used in this project.
