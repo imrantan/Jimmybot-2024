@@ -68,21 +68,24 @@ def get_conversations_for_user(conn, user_id):
     return rows
 
 # Get the key information
-def append_conversations_to_messages(new_message, conversations):
+def append_conversations_to_messages(new_message, conversations, max_convo):
     """
     new_message - dictionary for the input prompt
     conversations - output of get_conversations_for_user function
     Combining them together to take into consideration historical chat context.
+
+    max_convo - Recall chat history up till the past 6 conversations. Must be even number.
     """
     messages = [] # create empty list
 
     if conversations:
-        loop_counter = 1 # start counting the loops. i want it to loop 4 times only
+        max_convo = max_convo # i want it to loop 4 times only
+        loop_counter = 1 # start counting the loops. 
         # append historical messages to messages list
 
-        if len(conversations) > 4:
-            for content in conversations[-4:]:
-                if loop_counter <= 4:
+        if len(conversations) > max_convo:
+            for content in conversations[-max_convo:]:
+                if loop_counter <= max_convo:
                     convo = {}
                     convo['parts'] = [content[4]]
                     convo['role'] = content[3]
@@ -117,43 +120,6 @@ def add_conversation(conn, user_id, timestamp, role, response):
     except sqlite3.Error as e:
         print(e)
 
-# # Function to get the number of conversations for a particular user ID
-# def get_num_conversations(conn, user_id):
-#     sql_count_conversations = "SELECT COUNT(*) FROM chat_history WHERE user_id = ?"
-#     try:
-#         c = conn.cursor()
-#         c.execute(sql_count_conversations, (user_id,))
-#         count = c.fetchone()[0]
-#         return count
-#     except sqlite3.Error as e:
-#         print(e)
-#         return 0
-
-# # Function to delete the oldest entry for a particular user ID if there are more than two entries
-# def delete_oldest_conversation(conn, user_id):
-#     num_conversations = get_num_conversations(conn, user_id)
-#     if num_conversations > 4:
-#         # we want to delete the last pair of conversation
-#         sql_delete_oldest = """
-#         DELETE FROM chat_history
-#         WHERE user_id = ?
-#         AND timestamp  = (
-#             SELECT timestamp
-#             FROM chat_history
-#             WHERE user_id = ?
-#             ORDER BY timestamp
-#             LIMIT 2
-#         )
-#         """
-#         try:
-#             c = conn.cursor()
-#             c.execute(sql_delete_oldest, (user_id, user_id))
-#             conn.commit()
-#             print("Oldest conversation deleted successfully.")
-#         except sqlite3.Error as e:
-#             print(e)
-#     else:
-#         print("Cannot delete the oldest conversation as there are not enough conversations for user ID", user_id)
 
 # path to the sqlite3 database
 db_name =  keys.chat_history_db
@@ -223,7 +189,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             # retrieve previous convos
             # Retrieve conversations for a specific user ID
             conversations = get_conversations_for_user(conn, effective_chat_id)
-            messages = append_conversations_to_messages(new_message, conversations)
+            messages = append_conversations_to_messages(new_message, conversations, max_convo=6)
             pprint(messages)
             response = model.generate_content(messages, safety_settings=safety_settings)
             model_timestamp = datetime.datetime.now()
@@ -253,19 +219,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Close the database connection
     conn.close()
 
-    # reopen the connection to delete the oldest conversation pair
-    # conn = create_connection(db_name)
-    # Delete the oldest conversation pair for a particular user ID if there are more than 4 entries
-    # delete_oldest_conversation(conn, effective_chat_id)
-
-    # output in terminal to check that deletion is done
-    # check_convos = get_conversations_for_user(conn, effective_chat_id)
-    # print('Saved conversation:\n')
-    # pprint(check_convos)
-    # print('---')
-
-    # Close the database connection
-    # conn.close()
 
 
 def main():
