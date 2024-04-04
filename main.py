@@ -189,7 +189,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             # retrieve previous convos
             # Retrieve conversations for a specific user ID
             conversations = get_conversations_for_user(conn, effective_chat_id)
-            messages = append_conversations_to_messages(new_message, conversations, max_convo=6)
+            messages = append_conversations_to_messages(new_message, conversations, max_convo=10)
             pprint(messages)
             response = model.generate_content(messages, safety_settings=safety_settings)
             model_timestamp = datetime.datetime.now()
