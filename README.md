@@ -2,12 +2,23 @@
 
 I made a Telegram Bot powered by Google's Gemini!
 
+[Talk to Jimmybot here](https://t.me/Jimmywfh_bot)
+
 <img src="jimmy.jpg" alt="Bot Preview" width="100"/>
 
 ## Description
 
 This was just a hobby project. Exploring Google's Gemini-Pro and Gemini-Pro-Vision. 
-Hence, the chatbot accepts both text and image inputs. And also, remembers chat history, up to past 2 convos.
+Hence, the chatbot accepts both text and image inputs. And also, remembers chat history (up to a limited number of convos).
+Bot can be added to chat groups but will only reply if you directly reply to it.
+You can ask the bot anything. I have one rule only, do not spam message the bot! Thank you.
+
+Disclaimer: 
+1. Bot is not guaranteed to be live 24/7. I have not permanently decided on a way to host it.
+2. Known issues exists they are the following so far:
+    - If you pin a message in the chatgroup, for some reason bot will pick it up and reply to it. But error occurs because conversation history is messed up. (try it then you will know what i am talking about)
+
+Do let me know if you encounter any other issues. Thanks.
 
 ## Getting Started
 
@@ -49,7 +60,6 @@ If you encounter any issues, please check the official documentation or reach ou
 ## Authors
 
 - Me. Check out my socials:
-  - [LinkedIn](https://www.linkedin.com/feed/)
   - [GitHub](https://github.com/imrantan)
 
 ## Version History
