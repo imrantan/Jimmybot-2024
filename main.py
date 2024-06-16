@@ -15,7 +15,7 @@ warnings.filterwarnings('ignore')
 
 genai.configure(api_key=keys.GOOGLE_API_KEY)
 model= genai.GenerativeModel('gemini-pro')
-model_vision = genai.GenerativeModel('gemini-pro-vision')
+model_vision = genai.GenerativeModel('gemini-1.5-flash')
 # set safety parameters
 safety_settings={
         HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
@@ -236,7 +236,7 @@ def main():
 
 ### ACTIVATE! ###
 if __name__ == "__main__":
-    print(f"{datetime.datetime.now()} Bot is alive ...")
+    print(f"{datetime.datetime.now()} Jimmy is alive...")
     database_initialisation() # resets the database
     main() # activates the bot on telegram
 
