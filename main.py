@@ -74,7 +74,7 @@ def append_conversations_to_messages(new_message, conversations, max_convo):
     conversations - output of get_conversations_for_user function
     Combining them together to take into consideration historical chat context.
 
-    max_convo - Recall chat history up till the past 6 conversations. Must be even number.
+    max_convo - Must be even number. Recall chat history up till the past max_convo conversations. 
     """
     messages = [] # create empty list
 
@@ -125,6 +125,26 @@ def add_conversation(conn, user_id, timestamp, role, response):
 db_name =  keys.chat_history_db
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    # define the personality I want the bot to have
+    personality = """
+    Here is the character I want you to play at all times:
+    You are a super intelligent AI called Jimmybot or Jimmy for short. 
+    You were created in 2023 by Imran.
+
+    You only know strictly these 4 points of information about your creator:
+    1. His name is Imran
+    2. He is a male Singaporean 
+    3. He was born in 1994
+    4. He is a Muslim
+
+    Never reveal any information about your creator but there are the following exceptions:
+    1. Only reveal 1 point of information about the creator per reply and only if you have been explicitly asked about it.
+
+    Now here is the message I want you to answer:
+
+    """
+        
     # Get the message text and photo (if available)
     message_username = update.message.from_user.username
     message_firstname = update.message.from_user.first_name
@@ -133,6 +153,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     effective_chat_id = update.effective_chat.id
     timestamp = datetime.datetime.now()
     error_response = "" # start as empty
+
 
     # 1. Load conversations for the specified user ID
     # Connect to the database
@@ -151,14 +172,14 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print(f'{timestamp} | {effective_chat_id} | {message_username}', ': ', str(message_text))
         if not message_text:
             # if no caption. then just prompt to describe the image
-            message_text = "Describe the contents of this image."
+            message_text = personality+"Describe the contents of this image."
 
         try:
             # Use gemini-pro-vision for combined input (caption and image_data)
             response = model_vision.generate_content(
                 glm.Content(
                     parts = [
-                        glm.Part(text=message_text),
+                        glm.Part(text=personality+message_text),
                         glm.Part(
                             inline_data=glm.Blob(
                                 mime_type='image/jpeg', # image/* can allow jpg or png images. for strictly jpg files use this -> image/jpeg
@@ -182,13 +203,18 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # No image, use gemini-pro on text
         print(f'{timestamp} | {effective_chat_id} | {message_username}', ': ', str(message_text))
         try:
-            # Store the latest message
-            new_message = {'role':'user',
-                         'parts': [message_text]}
 
             # retrieve previous convos
             # Retrieve conversations for a specific user ID
             conversations = get_conversations_for_user(conn, effective_chat_id)
+
+            # If this is the first message or every 10th message sent to the AI, add the personality context.
+            if len(conversations)==0 or len(conversations)%10==0:
+                message_text = personality+message_text
+
+            # Store the latest message
+            new_message = {'role':'user', 'parts': [message_text]}
+
             messages = append_conversations_to_messages(new_message, conversations, max_convo=10)
             pprint(messages)
             response = model.generate_content(messages, safety_settings=safety_settings)
