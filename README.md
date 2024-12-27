@@ -1,4 +1,4 @@
-# Jimmybot
+# Jimmybot (27 DEC 2024: DUE TO THE NEW GOOGLE RULES, I HAVE DECIDED TO DECOMMISSION THIS BOT!)
 
 I made a Telegram Bot powered by Google's Gemini!
 
